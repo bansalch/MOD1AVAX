@@ -1,27 +1,25 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.9;
+pragma solidity ^0.8.0;
 
-contract AdminControl {
-    address public admin;
-    uint256 public adminData;
+contract ValueManager {
+    uint256 public storedValue;
 
-
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can call this function");
-        _;
+    function updateValue(uint256 _newValue) public {
+        require(_newValue > 0, "Value must be greater than 0");
+        storedValue = _newValue;
     }
 
-    constructor() {
-        admin = msg.sender;
+    function multiplyValue() public {
+        uint256 previousValue = storedValue;
+        storedValue *= 2;
+
+        assert(storedValue == previousValue * 2);
     }
 
-    function changeAdmin(address newAdmin) public onlyAdmin {
-        require(newAdmin != address(0), "New admin address cannot be zero");
-        admin = newAdmin;
+    function clearValue() public {
+        if (storedValue > 100) {
+            revert("Value is too high to clear");
+        }
+        storedValue = 0;
     }
-
-    function setAdminData(uint256 _data) public onlyAdmin {
-        adminData = _data;
-    }
-
 }
